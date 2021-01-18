@@ -2,6 +2,9 @@ from models import naive_rolling_average, model_LSTM, naive_last_time_step, DA_R
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
+import torch
+
+
 class Trainer:
     def __init__(self, params, dict_generators):
 

@@ -94,10 +94,7 @@ class Encoder(nn.Module):
             x = t1 + t2
             x = torch.tanh(x)
             x = self.linear_attn_output(x)
-
-            #x = self.attn_linear(x.view(-1, self.hidden_size * 2 + self.T - 1))  # (batch_size * input_size) * 1
             # Eqn. 9: Softmax the attention weights
-            #attn_weights = tf.softmax(x.view(-1, self.input_size), dim=1)  # (batch_size, input_size)
             attn_weights = F.softmax(x.view(-1, self.input_size), dim=1)
             # Eqn. 10: LSTM
             weighted_input = torch.mul(attn_weights, input_data[:, t, :])  # (batch_size, input_size)
@@ -149,20 +146,10 @@ class Decoder(nn.Module):
                            state.repeat(self.T - 1, 1, 1).permute(1, 0, 2),
                            input_encoded), dim=2)
             # Eqn. 12 & 13: softmax on the computed attention weights
-            # x = tf.softmax(
-            #         self.attn_layer(
-            #             x.view(-1, 2 * self.decoder_hidden_size + self.encoder_hidden_size)
-            #         ).view(-1, self.T - 1),
-            #         dim=1)  # (batch_size, T - 1)
-
             x = F.softmax(self.attn_layer(
                         x.view(-1, 2 * self.decoder_hidden_size + self.encoder_hidden_size)
                     ).view(-1, self.T - 1),
                     dim=1)
-            # print(self.encoder_hidden_size)
-            # print(self.decoder_hidden_size)
-            # print(x.shape)
-            # print(weight.shape)
             weight[:, t, :] = x
             # Eqn. 14: compute context vector
             context = torch.bmm(x.unsqueeze(1), input_encoded)[:, 0, :]  # (batch_size, encoder_hidden_size)
