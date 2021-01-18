@@ -1,6 +1,7 @@
 from trainer import Trainer
 from dataloader import Dataset
 import torch
+import numpy as np
 class Rolling:
     def __init__(self, rolling_dict, params_dataset, params_data_generation, params_model):
             self.__dict__.update((k, v) for k, v in rolling_dict.items())
