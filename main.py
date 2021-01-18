@@ -47,24 +47,24 @@ params_model = {
 def main():
     ap = argparse.ArgumentParser("Weather Forecast")
 
-    ap.add_argument("model", choices=["DA-RNN", "LSTM", "naive_last_step", "naive_rolling_average", "conv"], help="chose which model to train")
+    ap.add_argument("--model", choices=["DA-RNN", "LSTM", "naive_last_step", "naive_rolling_average", "conv"], help="chose which model to train")
 
-    ap.add_argument("n_hidden", type=int, help="dimension of the hidden layer")
+    ap.add_argument("--nhidden", type=int, help="dimension of the hidden layer")
 
-    ap.add_argument("n_past", type=int, help="number of past step as inputs")
+    ap.add_argument("--npast", type=int, help="number of past step as inputs")
 
-    ap.add_argument("time_shift", type=int, help="prediction horizon")
+    ap.add_argument("--timeshift", type=int, help="prediction horizon")
     args = ap.parse_args()
     print("Loading Data")
     df = load_data()
     print("Data Loaded")
 
-    params_dataset['n_past'] = args.n_past
-    params_dataset['time_shift'] = args.time_shift
+    params_dataset['n_past'] = args.npast
+    params_dataset['time_shift'] = args.timeshift
     params_dataset['df'] = df
 
-    params_model['n_hidden'] = args.n_hidden
-    params_model['model_name'] = args.model_name
+    params_model['n_hidden'] = args.nhidden
+    params_model['model_name'] = args.model
     params_model['name'] = df.columns
 
 
