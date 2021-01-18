@@ -1,5 +1,7 @@
 from models import naive_rolling_average, model_LSTM, naive_last_time_step, DA_RNN, Conv_Model
-
+import torch.optim as optim
+import torch.nn.functional as F
+import numpy as np
 class Trainer:
     def __init__(self, params, dict_generators):
 
