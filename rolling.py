@@ -38,27 +38,27 @@ class Rolling:
     def rolling_training(self):
 
         for i in range(self.n_fold):
-        print('Fold n°{}'.format(i+1))
-        # Create generators
-        self.update_params_dataset(i)
-        dict_generators = self.create_generator()
+            print('Fold n°{}'.format(i+1))
+            # Create generators
+            self.update_params_dataset(i)
+            dict_generators = self.create_generator()
 
-      # Create model
-        mod = Trainer(self.params_model, dict_generators)
-        self.nb_parameters = sum(p.numel() for p in mod.model.parameters())
-      # Train model
-        mod.training()
+            # Create model
+            mod = Trainer(self.params_model, dict_generators)
+            self.nb_parameters = sum(p.numel() for p in mod.model.parameters())
+            # Train model
+            mod.training()
 
-      # Do forecast
-        mod.complete_forecast()
+            # Do forecast
+            mod.complete_forecast()
 
-      # Compute losses :
-        mod.compute_loss('training')
-        mod.compute_loss('test')
+            # Compute losses :
+            mod.compute_loss('training')
+            mod.compute_loss('test')
 
-      # Update Loss
-        self.list_train_loss.append(mod.result_loss_training)
-        self.list_test_loss.append(mod.result_loss_test)
+            # Update Loss
+            self.list_train_loss.append(mod.result_loss_training)
+            self.list_test_loss.append(mod.result_loss_test)
 
     def compute_loss(self):
         L_train = np.zeros((len(self.list_train_loss[0]), len(self.list_train_loss)))
