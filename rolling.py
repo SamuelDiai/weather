@@ -13,6 +13,7 @@ class Rolling:
             self.params_dataset_complete = self.params_dataset.copy()
             self.list_train_loss = []
             self.list_test_loss = []
+            self.list_val_loss = []
 
 
     def update_params_dataset(self, i):
