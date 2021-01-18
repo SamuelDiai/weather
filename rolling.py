@@ -64,6 +64,7 @@ class Rolling:
             # Compute losses :
             mod.compute_loss('training')
             mod.compute_loss('test')
+            mod.compute_loss('val')
 
             # Update Loss
             self.list_train_loss.append(mod.result_loss_training)
