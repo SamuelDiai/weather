@@ -32,7 +32,7 @@ class Rolling:
         test_set = Dataset('test', self.params_dataset_complete)
         test_generator = torch.utils.data.DataLoader(test_set, **self.params_data_generation)
 
-        val_set = Dataset('test', self.params_dataset_complete)
+        val_set = Dataset('val', self.params_dataset_complete)
         val_generator = torch.utils.data.DataLoader(val_set, **self.params_data_generation)
 
         dict_generators = {
@@ -67,33 +67,41 @@ class Rolling:
             # Update Loss
             self.list_train_loss.append(mod.result_loss_training)
             self.list_test_loss.append(mod.result_loss_test)
+            self.list_val_loss.append(mod.result_loss_val)
 
     def compute_loss(self):
         L_train = np.zeros((len(self.list_train_loss[0]), len(self.list_train_loss)))
-        L_test = np.zeros((len(self.list_train_loss[0]), len(self.list_train_loss)))
+        L_test = np.zeros((len(self.list_test_loss[0]), len(self.list_test_loss)))
+        L_val = np.zeros((len(self.list_val_loss[0]), len(self.list_val_loss)))
         for i, key in enumerate(self.list_train_loss[0]):
             for j in range(len(self.list_train_loss)):
                 L_train[i, j] = self.list_train_loss[j][key]
                 L_test[i, j] = self.list_test_loss[j][key]
+                L_val[i, j] = self.list_val_loss[j][key]
         mean_train = np.mean(L_train, axis = 1)
         mean_test = np.mean(L_test, axis = 1)
+        mean_val = np.mean(L_val, axis = 1)
         std_train = np.std(L_train, axis = 1)
+        std_val = np.std(L_val, axis = 1)
         std_test = np.std(L_test, axis = 1)
         dict_train = self.list_train_loss[0].copy()
-        dict_test = self.list_train_loss[0].copy()
+        dict_test = self.list_test_loss[0].copy()
+        dict_val = self.list_val_loss[0].copy()
         for i, key in enumerate(dict_train):
             dict_train[key] = [mean_train[i], std_train[i]]
             dict_test[key] = [mean_test[i], std_test[i]]
+            dict_val[key] = [mean_val[i], std_val[i]]
 
         self.train_loss = dict_train
         self.test_loss = dict_test
+        self.val_loss = dict_val
 
     def return_df(self):
         columns = ['model_name', 'nb parameters', 'n_past', 'target', 'time_shift', 'n_hidden', 'num_layers', 'learning_rate', 'dropout', 'n_epoch', 'len_buffer', 'len_training', 'len_test', 'len_val', 'n_fold', 'MAE_train', \
-               'MAE_test', 'RMSE_train', 'RMSE_test', 'sMAPE_train', 'sMAPE_test', 'MASE_train', 'MASE_test']
+               'MAE_test', 'MAE_val', 'RMSE_train', 'RMSE_test', 'RMSE_val', 'sMAPE_train', 'sMAPE_test', 'sMAPE_val', 'MASE_train', 'MASE_test', 'MASE_val']
 
-        data = [[self.params_model['model_name'], self.params_dataset['n_past'], self.params_dataset['target'], self.params_dataset['time_shift'], self.params_model['n_hidden'], \
+        data = [[self.params_model['model_name'], self.nb_parameters, self.params_dataset['n_past'], self.params_dataset['target'], self.params_dataset['time_shift'], self.params_model['n_hidden'], \
                  self.params_model['num_layers'], self.params_model['learning_rate'], self.params_model['dropout'], self.params_model['n_epoch'], self.len_buffer, self.len_training, \
-                 self.len_test, self.len_val, self.n_fold, self.train_loss['MAE'], self.test_loss['MAE'], self.train_loss['RMSE'], self.test_loss['RMSE'], self.train_loss['sMAPE'], self.test_loss['sMAPE'], \
-                 self.train_loss['MASE'], self.test_loss['MASE']]]
+                 self.len_test, self.len_val, self.n_fold, self.train_loss['MAE'], self.test_loss['MAE'], self.val_loss['MAE'], self.train_loss['RMSE'], self.test_loss['RMSE'], self.val_loss['RMSE'], self.train_loss['sMAPE'], self.test_loss['sMAPE'], self.val_loss['sMAPE'],\
+                 self.train_loss['MASE'], self.test_loss['MASE'], self.val_loss['MASE']]]
         return pd.DataFrame(data=data, columns = columns)
