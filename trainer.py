@@ -3,7 +3,7 @@ class Trainer:
 
         self.__dict__.update((k, v) for k, v in params.items())
         self.__dict__.update((k, v) for k, v in dict_generators.items())
-        self.idx_target = self.name.get_loc(training_generator.dataset.target)
+        self.idx_target = self.name.get_loc(self.training_generator.dataset.target)
         self.n_past = self.training_generator.dataset.n_past
         self.input_size = self.training_generator.dataset.df.shape[1]
 

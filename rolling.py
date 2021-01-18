@@ -29,9 +29,13 @@ class Rolling:
         test_set = Dataset('test', self.params_dataset_complete)
         test_generator = torch.utils.data.DataLoader(test_set, **self.params_data_generation)
 
+        val_set = Dataset('test', self.params_dataset_complete)
+        val_generator = torch.utils.data.DataLoader(val_set, **self.params_data_generation)
+
         dict_generators = {
             'training_generator' : training_generator,
             'test_generator' : test_generator,
+            'val_generator' : val_generator
             }
 
         return dict_generators
