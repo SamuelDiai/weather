@@ -18,7 +18,7 @@ class Rolling:
         self.params_dataset_complete['beginning_val'] = b + self.len_training + self.len_buffer
         self.params_dataset_complete['end_val'] = b + self.len_training + self.len_buffer + self.len_val
         self.params_dataset_complete['beginning_test'] = b + self.len_training + self.len_buffer + self.len_val + self.len_buffer
-        self.params_dataset_complete['end_test'] = b + self.len_training + self.len_buffer + self.len_val + len_test
+        self.params_dataset_complete['end_test'] = b + self.len_training + self.len_buffer + self.len_val + self.len_test
 
     def create_generator(self):
     # Generators
@@ -81,11 +81,11 @@ class Rolling:
         self.test_loss = dict_test
 
     def return_df(self):
-        columns = ['model_name', 'nb parameters', 'n_past', 'target', 'time_shift', 'n_hidden', 'num_layers', 'learning_rate', 'dropout', 'n_epoch', 'len_buffer', 'len_training', 'len_test', 'n_fold', 'MAE_train', \
+        columns = ['model_name', 'nb parameters', 'n_past', 'target', 'time_shift', 'n_hidden', 'num_layers', 'learning_rate', 'dropout', 'n_epoch', 'len_buffer', 'len_training', 'len_test', 'len_val', 'n_fold', 'MAE_train', \
                'MAE_test', 'RMSE_train', 'RMSE_test', 'sMAPE_train', 'sMAPE_test', 'MASE_train', 'MASE_test']
 
         data = [[self.params_model['model_name'], self.params_dataset['n_past'], self.params_dataset['target'], self.params_dataset['time_shift'], self.params_model['n_hidden'], \
                  self.params_model['num_layers'], self.params_model['learning_rate'], self.params_model['dropout'], self.params_model['n_epoch'], self.len_buffer, self.len_training, \
-                 self.len_test, self.n_fold, self.train_loss['MAE'], self.test_loss['MAE'], self.train_loss['RMSE'], self.test_loss['RMSE'], self.train_loss['sMAPE'], self.test_loss['sMAPE'], \
+                 self.len_test, self.len_val, self.n_fold, self.train_loss['MAE'], self.test_loss['MAE'], self.train_loss['RMSE'], self.test_loss['RMSE'], self.train_loss['sMAPE'], self.test_loss['sMAPE'], \
                  self.train_loss['MASE'], self.test_loss['MASE']]]
         return pd.DataFrame(data=data, columns = columns)
