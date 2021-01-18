@@ -26,7 +26,7 @@ rolling_dict = {
     'len_training' : 15000,
     'len_test' : 2000,
     'len_val' : 2000,
-    'n_fold' : 10,
+    'n_fold' : 2,
 }
 
 params_model = {
@@ -36,7 +36,7 @@ params_model = {
     "dropout" : 0.15,
     "learning_rate" : 1e-3,
     "adam_eps" : 1e-8,
-    "n_epoch" : 25,
+    "n_epoch" : 2,
     #"name" : df.columns,
     "device" : device,
     "verbose" : True,
