@@ -3,7 +3,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
 import torch
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Trainer:
     def __init__(self, params, dict_generators):
