@@ -1,3 +1,5 @@
+from models import naive_rolling_average, model_LSTM, naive_last_time_step, DA_RNN, Conv_Model
+
 class Trainer:
     def __init__(self, params, dict_generators):
 
