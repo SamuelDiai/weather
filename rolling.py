@@ -1,4 +1,5 @@
 from trainer import Trainer
+from dataloader import Dataset
 
 class Rolling:
     def __init__(self, rolling_dict, params_dataset, params_data_generation, params_model):
