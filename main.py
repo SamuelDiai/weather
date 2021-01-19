@@ -7,6 +7,7 @@ from utils import save_or_append
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("It is using %s device" % device)
 path_results = 'results.csv'
 
 params_data_generation = {
@@ -25,7 +26,7 @@ rolling_dict = {
     'len_training' : 15000,
     'len_test' : 2000,
     'len_val' : 2000,
-    'n_fold' : 2,
+    'n_fold' : 10,
 }
 
 params_model = {
@@ -35,7 +36,7 @@ params_model = {
     "dropout" : 0.15,
     "learning_rate" : 1e-3,
     "adam_eps" : 1e-8,
-    "n_epoch" : 2,
+    "n_epoch" : 50,
     #"name" : df.columns,
     "device" : device,
     "verbose" : True,
