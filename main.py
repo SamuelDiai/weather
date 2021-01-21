@@ -11,7 +11,7 @@ print("It is using %s device" % device)
 path_results = 'results.csv'
 
 params_data_generation = {
-    'batch_size': 5000,
+    'batch_size': 4000,
     'shuffle': False,
     'num_workers': 0,
 }
