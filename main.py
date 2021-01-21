@@ -11,7 +11,7 @@ print("It is using %s device" % device)
 path_results = 'results.csv'
 
 params_data_generation = {
-    'batch_size': 64,
+    'batch_size': 5000,
     'shuffle': False,
     'num_workers': 0,
 }
@@ -23,7 +23,7 @@ params_dataset = {
 
 rolling_dict = {
     'len_buffer' : 100,
-    'len_training' : 15000,
+    'len_training' : 30000,
     'len_test' : 2000,
     'len_val' : 2000,
     'n_fold' : 10,
@@ -36,7 +36,7 @@ params_model = {
     "dropout" : 0.15,
     "learning_rate" : 1e-3,
     "adam_eps" : 1e-8,
-    "n_epoch" : 50,
+    "n_epoch" : 30,
     #"name" : df.columns,
     "device" : device,
     "verbose" : True,
