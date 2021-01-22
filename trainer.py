@@ -17,7 +17,7 @@ class Trainer:
         if self.model_name == 'LSTM':
             self.model = model_LSTM(self.input_size, self.n_hidden, self.num_layers, self.dropout).to(self.device)
         elif self.model_name == 'naive_last_step':
-            self.model = naive_last_step(self.idx_target).to(self.device)
+            self.model = naive_last_time_step(self.idx_target).to(self.device)
         elif self.model_name == 'naive_rolling_average':
             self.model = naive_rolling_average(self.idx_target).to(self.device)
         elif self.model_name == 'DA-RNN' :
