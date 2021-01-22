@@ -140,7 +140,7 @@ class Trainer:
         # sMAPE
         smape = np.mean(200*err/(forecast + truth))
         # MASE
-        scale = np.mean(np.abs(np.roll(truth, shift = shift) - truth)[:-shift])
+        scale = np.mean(np.abs(np.roll(truth, shift = shift + 24*6) - truth)[shift + 24*6:])
         mase = np.mean(err /scale)
 
         if dataset == 'training':

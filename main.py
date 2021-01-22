@@ -40,7 +40,7 @@ params_model = {
     #"name" : df.columns,
     "device" : device,
     "verbose" : True,
-    "n_epochs_stop" : 10
+    "n_epochs_stop" : 30
 }
 
 
