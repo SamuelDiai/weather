@@ -70,6 +70,7 @@ class Rolling:
             self.list_train_loss.append(mod.result_loss_training)
             self.list_test_loss.append(mod.result_loss_test)
             self.list_val_loss.append(mod.result_loss_val)
+            print("TRAIN LOSS ", mod.result_loss_training, "VAL : ", mod.result_loss_val, "Test : ", mod.result_loss_test)
 
     def compute_loss(self):
         L_train = np.zeros((len(self.list_train_loss[0]), len(self.list_train_loss)))
