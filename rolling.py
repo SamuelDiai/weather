@@ -54,9 +54,10 @@ class Rolling:
 
             # Create model
             mod = Trainer(self.params_model, dict_generators)
-            #self.nb_parameters = sum(p.numel() for p in mod.model.parameters())
-            # Train model
-            #mod.training()
+            if self.params_model['model_name'] != 'naive_last_step':
+                self.nb_parameters = sum(p.numel() for p in mod.model.parameters())
+                # Train model
+                mod.training()
 
             # Do forecast
             mod.complete_forecast()
