@@ -102,7 +102,8 @@ class Rolling:
     def return_df(self):
         columns = ['model_name', 'nb parameters', 'n_past', 'target', 'time_shift', 'n_hidden', 'num_layers', 'learning_rate', 'dropout', 'n_epoch', 'len_buffer', 'len_training', 'len_test', 'len_val', 'n_fold', 'MAE_train', \
                'MAE_test', 'MAE_val', 'RMSE_train', 'RMSE_test', 'RMSE_val', 'sMAPE_train', 'sMAPE_test', 'sMAPE_val', 'MASE_train', 'MASE_test', 'MASE_val']
-
+        if self.params_model['model_name'] == 'naive_last_step':
+            self.nb_parameters = 0
         data = [[self.params_model['model_name'], self.nb_parameters, self.params_dataset['n_past'], self.params_dataset['target'], self.params_dataset['time_shift'], self.params_model['n_hidden'], \
                  self.params_model['num_layers'], self.params_model['learning_rate'], self.params_model['dropout'], self.params_model['n_epoch'], self.len_buffer, self.len_training, \
                  self.len_test, self.len_val, self.n_fold, self.train_loss['MAE'], self.test_loss['MAE'], self.val_loss['MAE'], self.train_loss['RMSE'], self.test_loss['RMSE'], self.val_loss['RMSE'], self.train_loss['sMAPE'], self.test_loss['sMAPE'], self.val_loss['sMAPE'],\
