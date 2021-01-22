@@ -25,8 +25,9 @@ class Trainer:
         elif self.model_name == 'conv':
             self.model = Conv_Model(input_size = self.input_size, n_past = self.n_past)
 
-        self.optimizer = optim.Adam(self.model.parameters(), lr = self.learning_rate, eps = self.adam_eps)
-        self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
+        if  self.model_name != 'naive_last_step':
+            self.optimizer = optim.Adam(self.model.parameters(), lr = self.learning_rate, eps = self.adam_eps)
+            self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, 'min')
         self.MSE = []
         self.MAE = []
         self.eval_epoch = []
