@@ -192,7 +192,7 @@ class DA_RNN(nn.Module):
 
 class Causal_Conv_1d(nn.Module):
 
-  def __init__(self, in_channels, out_channels, kernel_size, dilation):
+  def __init__(self, in_channels, out_channels, kernel_size, dilation, device):
     super(Causal_Conv_1d, self).__init__()
     self.padding = kernel_size//2 * dilation
     self.conv = nn.Conv1d(in_channels, out_channels, kernel_size, stride = 1, padding = self.padding, dilation=dilation).to(device)
@@ -203,27 +203,27 @@ class Causal_Conv_1d(nn.Module):
 
 class Conv_Model(nn.Module):
 
-    def __init__(self, input_size, n_past):
+    def __init__(self, input_size, n_past, device):
         super(Conv_Model, self).__init__()
         self.input_size = input_size
         self.n_past = n_past
 
         self.conv = nn.Sequential(
-            Causal_Conv_1d(self.input_size, 16, kernel_size=2, dilation=1),
+            Causal_Conv_1d(self.input_size, 16, kernel_size=2, dilation=1, device=device),
             nn.BatchNorm1d(num_features=16),
             nn.LeakyReLU(),
-            Causal_Conv_1d(16, 32, kernel_size=2, dilation=2),
+            Causal_Conv_1d(16, 32, kernel_size=2, dilation=2, device=device),
             nn.BatchNorm1d(num_features=32),
             nn.LeakyReLU(),
-            Causal_Conv_1d(32, 64, kernel_size=2, dilation=4),
+            Causal_Conv_1d(32, 64, kernel_size=2, dilation=4, device=device),
             nn.BatchNorm1d(64),
             nn.LeakyReLU(),
-            Causal_Conv_1d(64, 128, kernel_size=2, dilation=8),
+            Causal_Conv_1d(64, 128, kernel_size=2, dilation=8, device=device),
             nn.BatchNorm1d(128),
             nn.LeakyReLU(),
-            Causal_Conv_1d(128, 256, kernel_size=2, dilation=16),
+            Causal_Conv_1d(128, 256, kernel_size=2, dilation=16, device=device),
             nn.BatchNorm1d(256),
-        )
+        ).to(device)
 
         self.lin = nn.Sequential(
         # nn.Linear(16*self.n_past, 256),
@@ -232,7 +232,7 @@ class Conv_Model(nn.Module):
             nn.Linear(128, 64),
             nn.LeakyReLU(),
             nn.Linear(64, 1)
-        )
+        ).to(device)
 
     def forward(self, x):
         batch_size = x.shape[0]

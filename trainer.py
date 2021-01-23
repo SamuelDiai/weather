@@ -23,7 +23,7 @@ class Trainer:
         elif self.model_name == 'DA-RNN' :
             self.model = DA_RNN(input_size = self.input_size - 1, encoder_hidden_size = self.n_hidden, decoder_hidden_size = self.n_hidden, T = self.n_past+1, idx_target = self.idx_target, device = self.device, out_feats=1)
         elif self.model_name == 'conv':
-            self.model = Conv_Model(input_size = self.input_size, n_past = self.n_past)
+            self.model = Conv_Model(input_size = self.input_size, n_past = self.n_past, device=self.device)
 
         if  self.model_name != 'naive_last_step':
             self.optimizer = optim.Adam(self.model.parameters(), lr = self.learning_rate, eps = self.adam_eps)
