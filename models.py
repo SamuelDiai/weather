@@ -195,7 +195,7 @@ class Causal_Conv_1d(nn.Module):
   def __init__(self, in_channels, out_channels, kernel_size, dilation):
     super(Causal_Conv_1d, self).__init__()
     self.padding = kernel_size//2 * dilation
-    self.conv = nn.Conv1d(in_channels, out_channels, kernel_size, stride = 1, padding = self.padding, dilation=dilation)
+    self.conv = nn.Conv1d(in_channels, out_channels, kernel_size, stride = 1, padding = self.padding, dilation=dilation).to(device)
 
   def forward(self, x):
     x = self.conv(x)
