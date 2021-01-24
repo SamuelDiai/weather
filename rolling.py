@@ -54,7 +54,7 @@ class Rolling:
 
             # Create model
             mod = Trainer(self.params_model, dict_generators)
-            if self.params_model['model_name'] != 'naive_last_step':
+            if self.params_model['model_name'] != 'naive_last_step' or self.params_model['model_name'] != 'naive_rolling_average':
                 self.nb_parameters = sum(p.numel() for p in mod.model.parameters())
                 # Train model
                 mod.training()
@@ -103,7 +103,7 @@ class Rolling:
     def return_df(self):
         columns = ['model_name', 'nb parameters', 'n_past', 'target', 'time_shift', 'n_hidden', 'num_layers', 'learning_rate', 'dropout', 'n_epoch', 'len_buffer', 'len_training', 'len_test', 'len_val', 'n_fold', 'MAE_train', \
                'MAE_test', 'MAE_val', 'RMSE_train', 'RMSE_test', 'RMSE_val', 'sMAPE_train', 'sMAPE_test', 'sMAPE_val', 'MASE_train', 'MASE_test', 'MASE_val']
-        if self.params_model['model_name'] == 'naive_last_step':
+        if self.params_model['model_name'] == 'naive_last_step' or self.params_model['model_name'] == 'naive_rolling_average':
             self.nb_parameters = 0
         data = [[self.params_model['model_name'], self.nb_parameters, self.params_dataset['n_past'], self.params_dataset['target'], self.params_dataset['time_shift'], self.params_model['n_hidden'], \
                  self.params_model['num_layers'], self.params_model['learning_rate'], self.params_model['dropout'], self.params_model['n_epoch'], self.len_buffer, self.len_training, \
