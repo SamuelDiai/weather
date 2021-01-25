@@ -36,21 +36,15 @@ class model_LSTM(nn.Module):
         return self.lin(y[:, -1, :])
 
 def init_hidden(x, hidden_size: int, device):
-    """
-    Train the initial value of the hidden state:
-    https://r2rt.com/non-zero-initial-states-for-recurrent-neural-networks.html
-    """
-    # Variable is deprecated
-    #return Variable(torch.zeros(1, x.size(0), hidden_size)).to(device)
     return torch.zeros(1, x.size(0), hidden_size).to(device)
 
 
 class Encoder(nn.Module):
     def __init__(self, input_size: int, hidden_size: int, T: int, device):
         """
-        input size: number of underlying factors (81)
-        T: number of time steps (10)
-        hidden_size: dimension of the hidden state
+        input size: number of features
+        T: number of past time step (n_past)
+        hidden_size: number of hidden size
         """
         super(Encoder, self).__init__()
         self.input_size = input_size
@@ -68,43 +62,34 @@ class Encoder(nn.Module):
                                             out_features = 1)
 
     def forward(self, input_data):
-        # input_data: (batch_size, T - 1, input_size)
-        #input_weighted = Variable(torch.zeros(input_data.size(0), self.T - 1, self.input_size))
-        #input_encoded = Variable(torch.zeros(input_data.size(0), self.T - 1, self.hidden_size))
         input_weighted = torch.zeros(input_data.size(0), self.T - 1, self.input_size).to(self.device)
         input_encoded = torch.zeros(input_data.size(0), self.T - 1, self.hidden_size).to(self.device)
         weight = torch.zeros(input_data.size(0), self.T - 1, self.input_size).to(self.device)
 
-        # hidden, state: initial states with dimension hidden_size
         hidden = init_hidden(input_data, self.hidden_size, self.device)  # 1 * batch_size * hidden_size
         state = init_hidden(input_data, self.hidden_size, self.device)
 
         for t in range(self.T - 1):
-            # Eqn. 8: concatenate the hidden states with each predictor
-            #x = torch.cat((hidden.repeat(self.input_size, 1, 1).permute(1, 0, 2),
-            #               state.repeat(self.input_size, 1, 1).permute(1, 0, 2),
-            #               input_data.permute(0, 2, 1)), dim=2)  # batch_size * input_size * (2*hidden_size + T - 1)
 
             x = torch.cat((hidden.repeat(self.input_size, 1, 1).permute(1, 0, 2),
                            state.repeat(self.input_size, 1, 1).permute(1, 0, 2)),
                            dim=2)
-            # Eqn. 8: Get attention weights
+            # Compute attention weight
             t1 = self.linear_concat(x)
             t2 = self.linear_data(input_data.permute(0, 2, 1))
             x = t1 + t2
             x = torch.tanh(x)
             x = self.linear_attn_output(x)
-            # Eqn. 9: Softmax the attention weights
+            # Attention weights
             attn_weights = F.softmax(x.view(-1, self.input_size), dim=1)
-            # Eqn. 10: LSTM
+            # LSTM encoder
             weighted_input = torch.mul(attn_weights, input_data[:, t, :])  # (batch_size, input_size)
-            # Fix the warning about non-contiguous memory
-            # see https://discuss.pytorch.org/t/dataparallel-issue-with-flatten-parameter/8282
             self.lstm_layer.flatten_parameters()
             _, lstm_states = self.lstm_layer(weighted_input.unsqueeze(0), (hidden, state))
             hidden = lstm_states[0]
             state = lstm_states[1]
-            # Save output
+
+            # Keep the output in memory
             input_weighted[:, t, :] = weighted_input
             input_encoded[:, t, :] = hidden
             weight[:, t, :] = attn_weights
@@ -115,6 +100,13 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
 
     def __init__(self, encoder_hidden_size: int, decoder_hidden_size: int, T: int, device, out_feats=1):
+        """
+        encoder_hidden_size : number of hidden size in the encoder
+        decoder_hidden_size : number of hidden size in the decoder
+        T : number of past time step (n_past)
+        device : device
+        out_feats : number of output features
+        """
         super(Decoder, self).__init__()
         self.device = device
         self.T = T
@@ -132,9 +124,6 @@ class Decoder(nn.Module):
         self.fc.weight.data.normal_()
 
     def forward(self, input_encoded, y_history):
-        # input_encoded: (batch_size, T - 1, encoder_hidden_size)
-        # y_history: (batch_size, ( T - 1))
-        # Initialize hidden and state, (1, batch_size, decoder_hidden_size)
         hidden = init_hidden(input_encoded, self.decoder_hidden_size, self.device)
         state = init_hidden(input_encoded, self.decoder_hidden_size, self.device)
         #context = Variable(torch.zeros(input_encoded.size(0), self.encoder_hidden_size))
@@ -167,6 +156,9 @@ class Decoder(nn.Module):
 
 
 class DA_RNN(nn.Module):
+    """
+    Class concatenating the architecture of the encoder and decoder.
+    """
     def __init__(self,  input_size: int, encoder_hidden_size: int, decoder_hidden_size: int, T: int, idx_target, device, out_feats=1):
         super(DA_RNN, self).__init__()
         self.device = device
@@ -191,7 +183,9 @@ class DA_RNN(nn.Module):
         return spatial_weights, temporal_weights
 
 class Causal_Conv_1d(nn.Module):
-
+    """
+    Class for causal convolution (with dilation)
+    """
   def __init__(self, in_channels, out_channels, kernel_size, dilation, device):
     super(Causal_Conv_1d, self).__init__()
     self.padding = kernel_size//2 * dilation
@@ -202,7 +196,9 @@ class Causal_Conv_1d(nn.Module):
     return x[:, :, :-self.padding]
 
 class Conv_Model(nn.Module):
-
+      """
+      Stacked dilated convolutions
+      """
     def __init__(self, input_size, n_past, device):
         super(Conv_Model, self).__init__()
         self.input_size = input_size
