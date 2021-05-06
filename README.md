@@ -1,4 +1,4 @@
-Project for the course Deep Learning from Maria Vakalopoulou and Vincent Lepetit.
+## Project for the course Deep Learning from Maria Vakalopoulou and Vincent Lepetit.
 
 This work was made by **Paul Martin** (ENPC) and **Samuel Diai** (ENPC).
 
